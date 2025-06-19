@@ -1,0 +1,100 @@
+import { url } from "inspector";
+import prisma from "../../../config/db";
+import { CustomError } from "../../../cutomErrorhandler/authError";
+import { materialType, materialUpdateType } from "../../../types/type";
+import path from "path";
+import { deleteImg } from "../../../utilities/helper";
+export const createMaterial = async (materialDetail: materialType) => {
+  console.log(materialDetail);
+  const result = await prisma.$transaction(async (tx) => {
+    const mat = await tx.materials.create({
+      data: {
+        name: materialDetail.name,
+        user_id: Number(materialDetail.user_id),
+        description: materialDetail.description,
+        category: materialDetail.category,
+        price: Number(materialDetail.price),
+        quantity: Number(materialDetail.quantity),
+      },
+    });
+
+    await tx.material_images.create({
+      data: {
+        url_0: materialDetail.material_images.url_0,
+        url_1: materialDetail.material_images.url_1,
+        url_2: materialDetail.material_images.url_2,
+        alt_text: materialDetail.material_images.alt_text,
+        material_id: mat.material_id,
+      },
+    });
+
+    return mat;
+  });
+
+  return result;
+};
+
+export const updateMaterial = async (material: materialUpdateType) => {
+  const { material_id, material_images, ...materialData } = material;
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.materials.update({
+      where: { material_id },
+      data: materialData, // this works since materialData already has optional fields
+    });
+
+    // Handle material_images only if it's provided
+    if (material_images) {
+      await tx.material_images.update({
+        where: { material_id: material_id },
+        data: {
+          ...(material_images.url_0 !== undefined && {
+            url_0: material_images.url_0,
+          }),
+          ...(material_images.url_1 !== undefined && {
+            url_1: material_images.url_1,
+          }),
+          ...(material_images.url_2 !== undefined && {
+            url_2: material_images.url_2,
+          }),
+          ...(material_images.alt_text !== undefined && {
+            alt_text: material_images.alt_text,
+          }),
+        },
+      });
+    }
+
+    return true;
+  });
+
+  if (!result)
+    throw new CustomError(
+      "Error while updating the product. Please check your data.",
+      400
+    );
+
+  return result;
+};
+export const removeMaterial = async (material_id: number) => {
+  const material = await prisma.materials.findUnique({
+    where: { material_id },
+  });
+  if (!material)
+    throw new CustomError("No material found based on ur input", 401);
+  const result = await prisma.$transaction(async (tx) => {
+    const img = await tx.material_images.findUnique({
+      where: { material_id },
+    });
+    const imgPath = [img?.url_0, img?.url_1, img?.url_2];
+    for (const imgpath of imgPath) {
+      if (imgpath) {
+        const filePath = path.join(__dirname, "../../../../", imgpath);
+        deleteImg(filePath);
+      }
+    }
+    await tx.materials.delete({
+      where: { material_id },
+    });
+  });
+  return true;
+};
