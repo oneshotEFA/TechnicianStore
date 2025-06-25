@@ -40,7 +40,7 @@ export const updateMaterial = async (material: materialUpdateType) => {
   const result = await prisma.$transaction(async (tx) => {
     await tx.materials.update({
       where: { material_id },
-      data: materialData, // this works since materialData already has optional fields
+      data: materialData,
     });
 
     // Handle material_images only if it's provided
@@ -97,4 +97,31 @@ export const removeMaterial = async (material_id: number) => {
     });
   });
   return true;
+};
+
+export const handleFavorite = async (material_id: number, user_id: number) => {
+  try {
+    const existing = await prisma.favorites.findFirst({
+      where: {
+        user_id,
+        material_id,
+      },
+    });
+    if (existing) {
+      await prisma.favorites.delete({
+        where: { favorite_id: existing.favorite_id },
+      });
+      return true;
+    }
+    await prisma.favorites.create({
+      data: {
+        user_id,
+        material_id,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };

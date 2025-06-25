@@ -27,6 +27,18 @@ export type userDetail = {
   phone_number: string;
   address: string;
 };
+export type userUpdateDetail = {
+  user_id: number;
+  storeName?: string;
+  firstName?: string;
+  lastName?: string;
+  phone_number?: string;
+  address?: string;
+};
+export type criticalUpdate = {
+  email: string;
+  password: string;
+};
 export type materialUpdateType = {
   material_id: number;
   name?: string;

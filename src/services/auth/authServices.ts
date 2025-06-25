@@ -7,7 +7,7 @@ import { CustomError } from "../../cutomErrorhandler/authError";
 export const registerUser = async (newuser: userDetail) => {
   const existing = await findUserByEmail(newuser.email);
   if (existing) {
-    throw new CustomError("email already exists", 401);
+    throw new CustomError("email already exist", 401);
   }
   const hashpass = await bcrypt.hash(newuser.password, 10);
   const user = await prisma.users.create({

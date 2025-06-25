@@ -1,5 +1,6 @@
 import {
   createMaterial,
+  handleFavorite,
   removeMaterial,
   updateMaterial,
 } from "../../../services/materials/crudMaterials/crudMaterial";
@@ -116,5 +117,18 @@ export const removeMaterialController = async (
     }
     console.log(error);
     return res.status(500).json({ error: "internal server Error" });
+  }
+};
+export const handleFavoriteController = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { material_id, user_id } = req.body;
+    await handleFavorite(Number(material_id), Number(user_id));
+    return res.status(201).json({ success: true, message: "added to fav" });
+  } catch (error: any) {
+    console.log(error);
+    return res.status(401).json({ success: false, message: error?.message });
   }
 };

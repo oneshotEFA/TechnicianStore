@@ -4,7 +4,7 @@ import { findUserByEmail } from "../../utilities/helper";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../../config/db";
-import { error } from "console";
+
 import { CustomError } from "../../cutomErrorhandler/authError";
 import { loginUser, registerUser } from "../../services/auth/authServices";
 
@@ -52,28 +52,28 @@ export const getUserData = async (
   res: Response
 ): Promise<any> => {
   try {
-    const id = Number(req.params);
+    const { user_id } = req.params;
     const data = await prisma.users.findUnique({
-      where: { user_id: id },
+      where: { user_id: Number(user_id) },
     });
     if (data)
       return res.status(200).json({
         success: true,
         message: "fetched User",
-        data: data,
+        userData: data,
       });
     else
       return res.status(404).json({
         success: false,
         message: "No user found based on the given id",
-        data: null,
+        userData: null,
       });
   } catch (error: any) {
     console.log(error);
     return res.status(500).json({
       success: false,
       message: error.message || "internal server error",
-      data: null,
+      userData: null,
     });
   }
 };

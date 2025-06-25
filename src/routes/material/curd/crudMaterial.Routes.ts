@@ -28,5 +28,5 @@ router.post(
   ]),
   crudController.updateMaterialController
 );
-
+router.post("/favorite", verifyToken, crudController.handleFavoriteController);
 export default router;

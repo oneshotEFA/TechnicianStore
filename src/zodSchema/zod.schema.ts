@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { string } from "zod";
 
 export const loginschema = z.object({
   user: z.object({
@@ -31,3 +31,25 @@ export const materialSchema = z.object({
     alt_text: z.string(),
   }),
 });
+export const userUpdateSchema = z.object({
+  user_id: z.number(),
+  storeName: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone_number: z.string().optional(),
+  address: z.string().optional(),
+});
+export const updateEmailSchema = z.object({
+  newEmail: z.string().email(),
+  currentPassword: z.string().min(6),
+  user_id: z.number().int(),
+});
+
+export type UpdateEmailInput = z.infer<typeof updateEmailSchema>;
+
+export const updatePasswordSchema = z.object({
+  user_id: z.number(),
+  oldPassword: z.string().min(8),
+  newPassword: z.string().min(8),
+});
+export type updatePasswordInput = z.infer<typeof updatePasswordSchema>;

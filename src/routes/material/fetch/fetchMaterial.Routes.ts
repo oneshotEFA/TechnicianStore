@@ -11,9 +11,14 @@ router.get(
   fetchController.getMaterialsByUserController
 );
 router.get(
-  "/:material_id",
+  "/singleMaterial",
   verifyToken,
   fetchController.getSingleMaterialController
+);
+router.get(
+  "/search/:query",
+  verifyToken,
+  fetchController.getMaterialByQueryController
 );
 
 export default router;
