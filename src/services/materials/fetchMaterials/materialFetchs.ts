@@ -82,3 +82,28 @@ export const getMaterialByQuery = async (query: string) => {
     throw new CustomError("No material found", 404);
   }
 };
+export const getFavoriteMaterial = async (user_id: number) => {
+  try {
+    const material_ids = await prisma.favorites.findMany({
+      where: { user_id: user_id },
+      select: {
+        material_id: true,
+      },
+    });
+    const ids = material_ids.map((s) => s.material_id);
+    const favMaterial = await prisma.materials.findMany({
+      where: { material_id: { in: ids } },
+      include: {
+        material_images: true,
+      },
+    });
+    const length = favMaterial.length;
+    return {
+      Amount: length,
+      FavMaterials: favMaterial,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw new CustomError(error, 400);
+  }
+};

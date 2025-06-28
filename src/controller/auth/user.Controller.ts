@@ -15,7 +15,7 @@ export const updateUserInfoCOntroller = async (
     if (result)
       return res
         .status(201)
-        .json({ success: true, message: "user Info updated" });
+        .json({ success: true, message: "user Info updated", user: result });
   } catch (error) {
     console.log(error);
     return res

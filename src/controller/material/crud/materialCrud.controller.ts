@@ -12,8 +12,16 @@ export const createMaterialController = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { name, user_id, description, category, price, quantity, alt_text } =
-      req.body;
+    const {
+      name,
+      user_id,
+      description,
+      category,
+      price,
+      quantity,
+      alt_text,
+      address,
+    } = req.body;
 
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
@@ -26,6 +34,7 @@ export const createMaterialController = async (
       category,
       price: Number(price),
       quantity: Number(quantity),
+      address,
       material_images: {
         url_0: files.url_0[0].path,
         url_1: files.url_1 ? files.url_1[0].path : undefined,

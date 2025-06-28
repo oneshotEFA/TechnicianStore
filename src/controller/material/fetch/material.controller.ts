@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CustomError } from "../../../cutomErrorhandler/authError";
 import * as materialFetch from "../../../services/materials/fetchMaterials/materialFetchs";
+import { popularMaterial } from "../../../services/materials/fetchMaterials/algorithms/popularMaterial";
 
 export const getSingleMaterialController = async (
   req: Request,
@@ -111,6 +112,65 @@ export const getMaterialByQueryController = async (
     res.status(500).json({
       success: false,
       message: "internal server error",
+      fetchedMaterial: null,
+    });
+  }
+};
+
+export const getFavMaterialController = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const user_id = req.params.user_id;
+    const { Amount, FavMaterials } = await materialFetch.getFavoriteMaterial(
+      Number(user_id)
+    );
+    return res.status(201).json({
+      success: true,
+      message: "fetched",
+      amount: Amount,
+      fetchedMaterial: FavMaterials,
+    });
+  } catch (error) {
+    if (error instanceof CustomError) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+        success: false,
+        fetchedMaterial: null,
+      });
+    }
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      fetchedMaterial: null,
+    });
+  }
+};
+export const getMaterialByPopularity = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const popularMaterials = await popularMaterial();
+    if (popularMaterials) {
+      return res.status(200).json({
+        success: true,
+        fetchedMaterial: popularMaterials,
+        message: "fetched popular product",
+      });
+    }
+    return res.status(404).json({
+      success: true,
+      fetchedMaterial: null,
+      message: "No popular product Found",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error,
       fetchedMaterial: null,
     });
   }

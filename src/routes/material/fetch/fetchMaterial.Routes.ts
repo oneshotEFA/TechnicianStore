@@ -20,5 +20,10 @@ router.get(
   verifyToken,
   fetchController.getMaterialByQueryController
 );
-
+router.get(
+  "/favorite/:user_id",
+  verifyToken,
+  fetchController.getFavMaterialController
+);
+router.get("/popular", verifyToken, fetchController.getMaterialByPopularity);
 export default router;

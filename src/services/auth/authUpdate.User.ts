@@ -11,46 +11,17 @@ export const updateUserInfo = async (info: userUpdateDetail) => {
   try {
     const { user_id, ...data } = info;
 
-    await prisma.users.update({
+    const user = await prisma.users.update({
       where: { user_id },
       data,
     });
-    return true;
+    return user;
   } catch (error) {
     console.log(error);
-    return false;
+    return null;
   }
 };
-// export const updateEmail = async (
-//   newEmail: string,
-//   currentPassword: string,
-//   user_id: number
-// ) => {
-//   try {
-//     const user = await prisma.users.findUnique({
-//       where: { user_id },
-//       select: {
-//         password: true,
-//       },
-//     });
-//     if (user)
-//       if (await bcrypt.compare(currentPassword, user.password)) {
-//         await prisma.users.update({
-//           where: { user_id },
 
-//           data: {
-//             email: newEmail,
-//           },
-//         });
-//         return true;
-//       }
-//     console.log("password does't match");
-//     return false;
-//   } catch (error) {
-//     console.log(error);
-//     return false;
-//   }
-// };
 export const updateEmail = async (input: UpdateEmailInput) => {
   const parseResult = updateEmailSchema.safeParse(input);
   if (!parseResult.success) {

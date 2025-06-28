@@ -15,6 +15,7 @@ export const createMaterial = async (materialDetail: materialType) => {
         category: materialDetail.category,
         price: Number(materialDetail.price),
         quantity: Number(materialDetail.quantity),
+        address: materialDetail.address,
       },
     });
 

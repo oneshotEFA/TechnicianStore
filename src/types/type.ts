@@ -5,6 +5,7 @@ export type materialType = {
   category: string;
   price: number;
   quantity: number;
+  address: string;
   material_images: material_images;
 };
 export type material_images = {
@@ -47,5 +48,6 @@ export type materialUpdateType = {
   category?: string;
   price?: number;
   quantity?: number;
+  address?: string;
   material_images?: material_images;
 };

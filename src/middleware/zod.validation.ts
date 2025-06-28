@@ -6,12 +6,14 @@ export const validateData = (schema: AnyZodObject) => {
     try {
       schema.parse(req.body);
       next();
+      return;
     } catch (error: any) {
       if (error instanceof ZodError) {
         res.status(400).json({
           error: "Validation failed",
           details: error.errors,
         });
+        return;
       }
       res.status(500).json({
         error: "Internal server error in validation",

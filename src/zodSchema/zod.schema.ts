@@ -12,7 +12,7 @@ export const registerSchema = z.object({
     lastName: z.string().max(10),
     email: z.string().email(),
     password: z.string().min(8),
-    storeName: z.string(),
+    storeName: z.string().optional(),
     phone_number: z.string(),
     address: z.string(),
   }),
@@ -24,6 +24,7 @@ export const materialSchema = z.object({
   category: z.string(),
   price: z.number(),
   quantity: z.number(),
+  address: z.string(),
   material_images: z.object({
     url_0: z.string(),
     url_1: z.string(),
