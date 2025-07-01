@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CustomError } from "../../../cutomErrorhandler/authError";
 import * as materialFetch from "../../../services/materials/fetchMaterials/materialFetchs";
 import { popularMaterial } from "../../../services/materials/fetchMaterials/algorithms/popularMaterial";
+import { off } from "process";
 
 export const getSingleMaterialController = async (
   req: Request,
@@ -43,18 +44,26 @@ export const getAllMaterialsController = async (
   res: Response
 ): Promise<any> => {
   try {
-    const materials = await materialFetch.getAllMaterials();
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    const materials = await materialFetch.getAllMaterials(
+      Number(offset),
+      Number(limit)
+    );
     res
       .status(200)
       .json({ message: "fetched", success: true, fetchedMaterial: materials });
   } catch (err) {
     if (err instanceof CustomError) {
+      console.log(err);
       return res.status(err.statusCode).json({
         message: err.message,
         success: false,
         fetchedMaterial: null,
       });
     }
+    console.error(err);
     res.status(500).json({
       success: false,
       message: "internal server error",

@@ -24,12 +24,14 @@ export const getSingleMaterial = async (
   };
 };
 
-export const getAllMaterials = async () => {
+export const getAllMaterials = async (offset: number, limit: number) => {
   const materials = await prisma.materials.findMany({
     where: { status: "available" },
     include: {
       material_images: true,
     },
+    skip: offset,
+    take: limit,
   });
   if (materials.length === 0) throw new CustomError("No material found", 404);
   return materials;

@@ -7,6 +7,8 @@ import {
   updatePasswordInput,
   updatePasswordSchema,
 } from "../../zodSchema/zod.schema";
+import { findUserByEmail } from "../../utilities/helper";
+import crypto from "crypto";
 export const updateUserInfo = async (info: userUpdateDetail) => {
   try {
     const { user_id, ...data } = info;
@@ -117,4 +119,58 @@ export const updatePassword = async (
       message: "Server error while updating password",
     };
   }
+};
+export const forgotPassword = async (email: string) => {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    return {
+      user: null,
+      message: "No User Found",
+      success: false,
+    };
+  }
+  const token = crypto.randomBytes(4).toString("hex");
+  const expires = new Date(Date.now() + 1000 * 60 * 15);
+  if (!token) {
+    return {
+      user: null,
+      message: "Failed to generate reset code",
+      success: false,
+    };
+  }
+  await prisma.users.update({
+    where: { email },
+    data: { reset_code: token, reset_expires: expires },
+  });
+  return {
+    user,
+    message: "Reset code sent to your email",
+    success: true,
+  };
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  const user = await prisma.users.findFirst({
+    where: {
+      reset_code: token,
+      reset_expires: {
+        gte: new Date(),
+      },
+    },
+  });
+  if (!user) {
+    return {
+      success: false,
+      message: "Invalid or expired token",
+    };
+  }
+  const hashPass = await bcrypt.hash(newPassword, 10);
+  await prisma.users.update({
+    where: { user_id: user.user_id },
+    data: { password: hashPass, reset_code: null, reset_expires: null },
+  });
+  return {
+    success: true,
+    message: "Password reset successfully",
+  };
 };

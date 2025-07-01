@@ -1,49 +1,42 @@
 import Router from "express";
 import { validateData } from "../../middleware/zod.validation";
-import {
-  loginschema,
-  registerSchema,
-  updateEmailSchema,
-  updatePasswordSchema,
-  userUpdateSchema,
-} from "../../zodSchema/zod.schema";
+import * as zodSchema from "../../zodSchema/zod.schema";
 import * as authController from "../../controller/auth/auth.controller";
 import { verifyToken } from "../../middleware/verifyToken";
-import {
-  updateEmailController,
-  updatePasswordController,
-  updateUserInfoCOntroller,
-} from "../../controller/auth/user.Controller";
+import * as userController from "../../controller/auth/user.Controller";
 
 const router = Router();
 
 router.post(
   "/register",
-  validateData(registerSchema),
+  validateData(zodSchema.registerSchema),
   authController.registerUserController
 );
 router.post(
   "/login",
-  validateData(loginschema),
+  validateData(zodSchema.loginschema),
   authController.loginController
 );
 router.get("/getUser/:user_id", verifyToken, authController.getUserData);
 router.post(
   "/update",
-  validateData(userUpdateSchema),
+  validateData(zodSchema.userUpdateSchema),
   verifyToken,
-  updateUserInfoCOntroller
+  userController.updateUserInfoCOntroller
 );
 router.post(
   "/update/email",
-  validateData(updateEmailSchema),
+  validateData(zodSchema.updateEmailSchema),
   verifyToken,
-  updateEmailController
+  userController.updateEmailController
 );
 router.post(
   "/update/password",
-  validateData(updatePasswordSchema),
+  validateData(zodSchema.updatePasswordSchema),
   verifyToken,
-  updatePasswordController
+  userController.updatePasswordController
 );
+
+router.post("/forgot", userController.forgotPasswordController);
+router.post("/forgot/reset", userController.restPasswordController);
 export default router;

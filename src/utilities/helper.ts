@@ -7,7 +7,7 @@ export const findUserByEmail = async (email: string) => {
     where: {
       email: {
         equals: email,
-        mode: "insensitive", // Case-insensitive comparison
+        mode: "insensitive",
       },
     },
   });

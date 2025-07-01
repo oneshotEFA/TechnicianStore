@@ -59,41 +59,42 @@ export const createMaterialController = async (
       .json({ success: false, error: "internal server error" });
   }
 };
+type updateing = {
+  material_id: number;
+  name?: string;
+  description?: string;
+  category?: string;
+  price?: number;
+  quantity?: number;
+  alt_text?: string;
+  status?: string;
+  address?: string;
+};
 
 export const updateMaterialController = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   try {
-    const {
-      material_id,
-      name,
-      user_id,
-      description,
-      category,
-      price,
-      quantity,
-      alt_text,
-      status,
-    } = req.body;
+    const update: updateing = req.body;
+
     const filepaths = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
     const updateDetail = {
-      material_id: Number(material_id),
-      name,
-      status,
-      user_id: user_id ? Number(user_id) : undefined,
-      description,
-      category,
-      price: price ? Number(price) : undefined,
-      quantity: quantity ? Number(quantity) : undefined,
+      material_id: Number(update.material_id),
+      name: update.name,
+      status: update.status,
+      description: update.description,
+      price: update.price ? Number(update.price) : undefined,
+      quantity: update.quantity ? Number(update.quantity) : undefined,
+      address: update.address,
       material_images: {
-        material_id: Number(material_id),
+        material_id: Number(update.material_id),
         url_0: filepaths?.url_0?.[0]?.path,
         url_1: filepaths?.url_1?.[0]?.path,
         url_2: filepaths?.url_2?.[0]?.path,
-        alt_text,
+        alt_text: update.alt_text,
       },
     };
 
