@@ -42,7 +42,6 @@ export const updatePasswordController = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  console.log(req.body);
   const result = await updatePassword(req.body);
 
   if (!result.success) {
