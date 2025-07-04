@@ -1,8 +1,16 @@
 import express, { Request, Response } from "express";
 import routes from "./routes/index";
 import path from "path";
+import cors from "cors";
+
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use("/api", routes);

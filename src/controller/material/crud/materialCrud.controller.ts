@@ -80,7 +80,6 @@ export const updateMaterialController = async (
 ): Promise<any> => {
   try {
     const update: updateing = req.body;
-
     const updateDetail = {
       material_id: Number(update.material_id),
       name: update.name,
