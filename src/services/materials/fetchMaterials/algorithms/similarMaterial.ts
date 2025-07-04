@@ -26,6 +26,7 @@ export const similarMaterial = async (query: string) => {
     });
     if (materials.length === 0) {
       console.log("No similar product found");
+      return null;
     }
     return materials;
   } catch (error) {

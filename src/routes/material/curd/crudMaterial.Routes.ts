@@ -9,24 +9,7 @@ router.delete(
   "/post/delete/:material_id",
   crudController.removeMaterialController
 );
-router.post(
-  "/post",
-  verifyToken,
-  upload.fields([
-    { name: "url_0", maxCount: 1 },
-    { name: "url_1", maxCount: 1 },
-    { name: "url_2", maxCount: 1 },
-  ]),
-  crudController.createMaterialController
-);
-router.post(
-  "/post/update",
-  upload.fields([
-    { name: "url_0", maxCount: 1 },
-    { name: "url_1", maxCount: 1 },
-    { name: "url_2", maxCount: 1 },
-  ]),
-  crudController.updateMaterialController
-);
+router.post("/post", verifyToken, crudController.createMaterialController);
+router.post("/post/update", crudController.updateMaterialController);
 router.post("/favorite", verifyToken, crudController.handleFavoriteController);
 export default router;

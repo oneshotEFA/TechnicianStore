@@ -12,6 +12,7 @@ export const createMaterialController = async (
   res: Response
 ): Promise<any> => {
   try {
+    console.log(req.body);
     const {
       name,
       user_id,
@@ -21,11 +22,10 @@ export const createMaterialController = async (
       quantity,
       alt_text,
       address,
+      url_0,
+      url_1,
+      url_2,
     } = req.body;
-
-    const files = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
 
     const materialDetail = {
       name,
@@ -36,9 +36,9 @@ export const createMaterialController = async (
       quantity: Number(quantity),
       address,
       material_images: {
-        url_0: files.url_0[0].path,
-        url_1: files.url_1 ? files.url_1[0].path : undefined,
-        url_2: files.url_2 ? files.url_2[0].path : undefined,
+        url_0,
+        url_1,
+        url_2,
         alt_text,
       },
     };
@@ -69,6 +69,9 @@ type updateing = {
   alt_text?: string;
   status?: string;
   address?: string;
+  url_0?: string;
+  url_1?: string;
+  url_2?: string;
 };
 
 export const updateMaterialController = async (
@@ -78,9 +81,6 @@ export const updateMaterialController = async (
   try {
     const update: updateing = req.body;
 
-    const filepaths = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
     const updateDetail = {
       material_id: Number(update.material_id),
       name: update.name,
@@ -91,13 +91,12 @@ export const updateMaterialController = async (
       address: update.address,
       material_images: {
         material_id: Number(update.material_id),
-        url_0: filepaths?.url_0?.[0]?.path,
-        url_1: filepaths?.url_1?.[0]?.path,
-        url_2: filepaths?.url_2?.[0]?.path,
+        url_0: update?.url_0 || "",
+        url_1: update?.url_1,
+        url_2: update?.url_2,
         alt_text: update.alt_text,
       },
     };
-
     await updateMaterial(updateDetail);
     return res
       .status(202)
