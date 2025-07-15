@@ -50,7 +50,7 @@ model users {
   firstName     String
   lastName      String
   phone_number  String
-  address       String
+  address       String?
   reset_code    String?  @unique   
   reset_expires DateTime?
   created_at    DateTime?   @default(now()) @db.Timestamptz(6)

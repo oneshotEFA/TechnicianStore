@@ -23,7 +23,6 @@ export const loginController = async (
     });
   } catch (err) {
     if (err instanceof CustomError) {
-      console.error(err);
       return res.status(err.statusCode).json({ error: err.message });
     }
     console.error(err);

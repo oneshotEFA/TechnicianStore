@@ -12,9 +12,8 @@ export const registerSchema = z.object({
     lastName: z.string().max(10),
     email: z.string().email(),
     password: z.string().min(8),
-    storeName: z.string().optional(),
+
     phone_number: z.string(),
-    address: z.string(),
   }),
 });
 export const materialSchema = z.object({

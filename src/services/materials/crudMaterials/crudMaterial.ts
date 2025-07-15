@@ -43,8 +43,6 @@ export const updateMaterial = async (material: materialUpdateType) => {
       where: { material_id },
       data: materialData,
     });
-
-    // Handle material_images only if it's provided
     if (material_images) {
       await tx.material_images.update({
         where: { material_id: material_id },
@@ -81,23 +79,12 @@ export const removeMaterial = async (material_id: number) => {
     where: { material_id },
   });
   if (!material)
-    throw new CustomError("No material found based on ur input", 401);
-  const result = await prisma.$transaction(async (tx) => {
-    const img = await tx.material_images.findUnique({
-      where: { material_id },
-    });
-    const imgPath = [img?.url_0, img?.url_1, img?.url_2];
-    for (const imgpath of imgPath) {
-      if (imgpath) {
-        const filePath = path.join(__dirname, "../../../../", imgpath);
-        deleteImg(filePath);
-      }
-    }
-    await tx.materials.delete({
-      where: { material_id },
-    });
+    throw new CustomError("No material found based on ur input", 404);
+  const result = await prisma.materials.delete({
+    where: { material_id },
   });
-  return true;
+  if (result) return true;
+  return false;
 };
 
 export const handleFavorite = async (material_id: number, user_id: number) => {
