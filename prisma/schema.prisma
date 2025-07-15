@@ -61,6 +61,7 @@ model users {
 model material_images {
   image_id     Int     @id @default(autoincrement())
   material_id  Int      @unique
+  publicId     String?
   url_0        String     @db.VarChar(255)
   url_1        String?    @db.VarChar(255)
   url_2        String?    @db.VarChar(255)

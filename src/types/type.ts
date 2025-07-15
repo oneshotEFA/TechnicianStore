@@ -14,6 +14,7 @@ export type material_images = {
   url_1?: string;
   url_2?: string;
   alt_text?: string;
+  publicId: string;
 };
 export type loginUserType = {
   email: string;

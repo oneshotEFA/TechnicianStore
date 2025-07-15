@@ -12,7 +12,6 @@ export const createMaterialController = async (
   res: Response
 ): Promise<any> => {
   try {
-    console.log(req.body);
     const {
       name,
       user_id,
@@ -25,6 +24,7 @@ export const createMaterialController = async (
       url_0,
       url_1,
       url_2,
+      publicId,
     } = req.body;
 
     const materialDetail = {
@@ -36,6 +36,7 @@ export const createMaterialController = async (
       quantity: Number(quantity),
       address,
       material_images: {
+        publicId,
         url_0,
         url_1,
         url_2,

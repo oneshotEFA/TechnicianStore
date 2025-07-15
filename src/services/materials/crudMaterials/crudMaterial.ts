@@ -5,7 +5,6 @@ import { materialType, materialUpdateType } from "../../../types/type";
 import path from "path";
 import { deleteImg } from "../../../utilities/helper";
 export const createMaterial = async (materialDetail: materialType) => {
-  console.log(materialDetail);
   const result = await prisma.$transaction(async (tx) => {
     const mat = await tx.materials.create({
       data: {
@@ -24,6 +23,7 @@ export const createMaterial = async (materialDetail: materialType) => {
         url_0: materialDetail.material_images.url_0,
         url_1: materialDetail.material_images.url_1,
         url_2: materialDetail.material_images.url_2,
+        publicId: materialDetail.material_images.publicId,
         alt_text: materialDetail.material_images.alt_text,
         material_id: mat.material_id,
       },
