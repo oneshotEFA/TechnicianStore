@@ -50,6 +50,9 @@ export const updateMaterial = async (material: materialUpdateType) => {
           ...(material_images.url_0 !== undefined && {
             url_0: material_images.url_0,
           }),
+          ...(material_images.publicId !== undefined && {
+            publicId: material_images.publicId,
+          }),
           ...(material_images.url_1 !== undefined && {
             url_1: material_images.url_1,
           }),

@@ -73,6 +73,7 @@ type updateing = {
   url_0?: string;
   url_1?: string;
   url_2?: string;
+  publicId: string;
 };
 
 export const updateMaterialController = async (
@@ -91,6 +92,7 @@ export const updateMaterialController = async (
       address: update.address,
       material_images: {
         material_id: Number(update.material_id),
+        publicId: update.publicId,
         url_0: update?.url_0 || "",
         url_1: update?.url_1,
         url_2: update?.url_2,
