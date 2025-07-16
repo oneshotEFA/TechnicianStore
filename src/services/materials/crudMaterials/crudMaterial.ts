@@ -3,7 +3,7 @@ import prisma from "../../../config/db";
 import { CustomError } from "../../../cutomErrorhandler/authError";
 import { materialType, materialUpdateType } from "../../../types/type";
 import path from "path";
-import { deleteImg } from "../../../utilities/helper";
+import { deleteImageFromCloud } from "../../../utilities/helper";
 export const createMaterial = async (materialDetail: materialType) => {
   const result = await prisma.$transaction(async (tx) => {
     const mat = await tx.materials.create({
@@ -81,13 +81,39 @@ export const removeMaterial = async (material_id: number) => {
   const material = await prisma.materials.findUnique({
     where: { material_id },
   });
-  if (!material)
-    throw new CustomError("No material found based on ur input", 404);
-  const result = await prisma.materials.delete({
-    where: { material_id },
+
+  if (!material) {
+    throw new CustomError("No material found based on your input", 404);
+  }
+
+  const materialImages = await prisma.material_images.findUnique({
+    where: {
+      material_id: material.material_id,
+    },
   });
-  if (result) return true;
-  return false;
+
+  const { success, error } = await deleteImageFromCloud(
+    materialImages?.publicId || ""
+  );
+  if (!success) {
+    throw new CustomError("Failed to delete image from Cloudinary", 500);
+  }
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.material_images.delete({
+      where: {
+        material_id: material_id,
+      },
+    });
+
+    await tx.materials.delete({
+      where: { material_id },
+    });
+
+    return true;
+  });
+
+  return result;
 };
 
 export const handleFavorite = async (material_id: number, user_id: number) => {
